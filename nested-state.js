@@ -1,5 +1,6 @@
 const redux = require('redux')
-const createStore = redux.legacy_createStore
+const produce = require('immer').produce
+
 const initialState = {
     name: 'Randomname',
     address: {
@@ -21,13 +22,16 @@ const streetUpdated = (street) => {
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case STREET_UPDATED:
-            return {
-                ...state,
-                address: {
-                    ...state.address,
-                    street: action.payload,
-                }
-            }
+            // return {
+            //     ...state,
+            //     address: {
+            //         ...state.address,
+            //         street: action.payload,
+            //     }
+            // }
+            return produce(state, (draft) => {
+                draft.address.street = action.payload
+            })
         default: {
             return state
         }
@@ -41,5 +45,5 @@ const unsubscribe = store.subscribe(() => {
     console.log('Updated State', store.getState());
 })
 
-store.dispatch(streetUpdated('1234 New Street'))
+store.dispatch(streetUpdated('123 New Street'))
 unsubscribe()
